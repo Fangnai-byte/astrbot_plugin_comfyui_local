@@ -1,0 +1,267 @@
+{
+  "enable": {
+    "description": "启用插件",
+    "type": "bool",
+    "default": true
+  },
+  "server": {
+    "description": "ComfyUI 服务地址",
+    "type": "string",
+    "default": "http://127.0.0.1:8188",
+    "hint": "ComfyUI 启动后控制台会打印地址，例如 http://127.0.0.1:8188"
+  },
+  "command": {
+    "description": "主指令名",
+    "type": "string",
+    "default": "画图",
+    "hint": "默认同时提供 /画图、/文生图、/comfyui 三个写法"
+  },
+  "default_workflow": {
+    "description": "默认工作流",
+    "type": "string",
+    "default": "",
+    "hint": "不指定 -w 且关键词未命中时用它。留空则：只有一个工作流时自动用它，多个时提示用户用 -w 指定"
+  },
+  "workflow_rules": {
+    "description": "关键词 → 工作流 路由表",
+    "type": "text",
+    "default": "",
+    "hint": "每行一条，格式「工作流名: 关键词1, 关键词2」。例：\nmy_lora_workflow: mychar, 我的角色\nstyle_workflow: 厚涂, 精致\n命中关键词时优先用该工作流（优先于默认工作流）。也兼容「关键词=工作流名」的反向写法；以 # 开头的行是注释"
+  },
+  "default_preset": {
+    "description": "默认预设",
+    "type": "string",
+    "default": "",
+    "hint": "留空则：说了角色关键词就套对应预设，没命中就只用你写的内容。填了会一直套这个预设"
+  },
+  "presets_file": {
+    "description": "预设文件路径",
+    "type": "string",
+    "default": "",
+    "hint": "留空用 data/plugin_data/astrbot_plugin_comfyui_local/presets.json"
+  },
+  "prompt_template": {
+    "description": "提示词拼接模板",
+    "type": "text",
+    "default": "{base}, {tags}, {prompt}",
+    "hint": "占位符：{base} 预设基础提示词（必须放最前，LoRA 触发词靠它）、{tags} 画质词、{prompt} 你的输入。留空则按「预设 + 画质词 + 输入」拼"
+  },
+  "quality_tags": {
+    "description": "追加画质词",
+    "type": "text",
+    "default": "masterpiece, best quality, very aesthetic, ultra detailed",
+    "hint": "会按上面的模板拼到用户输入前"
+  },
+  "negative_prompt": {
+    "description": "负面提示词",
+    "type": "text",
+    "default": "worst quality, low quality, score_6, score_5, score_4, bad anatomy, bad hands, extra fingers, watermark, username, text",
+    "hint": "留空则保留工作流里原本的负面提示词"
+  },
+  "width": {
+    "description": "覆盖宽度",
+    "type": "int",
+    "default": 0,
+    "hint": "0 表示沿用工作流原本的尺寸"
+  },
+  "height": {
+    "description": "覆盖高度",
+    "type": "int",
+    "default": 0,
+    "hint": "0 表示沿用工作流原本的尺寸"
+  },
+  "seed": {
+    "description": "固定随机种子",
+    "type": "int",
+    "default": -1,
+    "hint": "-1 表示每次随机"
+  },
+  "default_img2img_workflow": {
+    "description": "默认图生图工作流",
+    "type": "string",
+    "default": "",
+    "hint": "留空则自动挑：优先名字含 img2img 的工作流，其次任何含 LoadImage 取图节点的工作流"
+  },
+  "default_controlnet_workflow": {
+    "description": "默认 ControlNet 工作流",
+    "type": "string",
+    "default": "",
+    "hint": "留空则自动挑：优先名字含 controlnet 的工作流，其次任何含 ControlNetApply 的工作流"
+  },
+  "ref_mode": {
+    "description": "参考图默认用法",
+    "type": "string",
+    "default": "img2img",
+    "hint": "img2img = 当底图重绘（像官图）；controlnet = 只锁结构姿势、内容自由发挥。命令 -c 可临时切到 controlnet"
+  },
+  "controlnet_type": {
+    "description": "ControlNet 默认模式",
+    "type": "string",
+    "default": "auto",
+    "hint": "union 模型专用：auto / openpose / depth / hed·pidi·scribble / canny·lineart / normal / segment / tile / repaint"
+  },
+  "controlnet_strength": {
+    "description": "ControlNet 默认权重（%）",
+    "type": "int",
+    "default": 60,
+    "hint": "越高越死板地照抄参考图结构。实测：80 时提示词几乎改不动服装；55~65 才能换衣服同时保住姿势"
+  },
+  "img2img_denoise": {
+    "description": "图生图默认重绘幅度（%）",
+    "type": "int",
+    "default": 55,
+    "hint": "越小越接近参考图（立绘当底图建议 45~60）；可用命令里的 -d 0.5 临时覆盖"
+  },
+  "ref_max_side": {
+    "description": "参考图最长边（像素）",
+    "type": "int",
+    "default": 1536,
+    "hint": "立绘往往很大（如 958x2324），会先等比缩到这个尺寸再送进模型，避免爆显存"
+  },
+  "check_output_writable": {
+    "description": "出图前预检写盘权限",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后先上传一张 1x1 测试图确认 ComfyUI 能写盘，避免跑完一分钟才在 SaveImage 步骤报权限/磁盘错误"
+  },
+  "timeout": {
+    "description": "单次生成超时（秒）",
+    "type": "int",
+    "default": 300
+  },
+  "max_concurrency": {
+    "description": "并发生成数上限",
+    "type": "int",
+    "default": 1,
+    "hint": "显存有限时保持 1，避免多个任务同时抢显存"
+  },
+  "cache_limit": {
+    "description": "本地图片缓存上限（张）",
+    "type": "int",
+    "default": 200,
+    "hint": "超过后删除最旧的；0 表示不限制"
+  },
+  "show_progress": {
+    "description": "提交时回执",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后除「已开始」外，再额外发一条「已提交给 ComfyUI」"
+  },
+  "extra_workflow_dirs": {
+    "description": "额外工作流目录",
+    "type": "text",
+    "default": "",
+    "hint": "可选。例如 ComfyUI 的 user\\default\\workflows 目录，多个用 ; 分隔。同名时插件目录优先"
+  },
+  "enable_r18": {
+    "description": "开启露骨内容豁免权限门",
+    "type": "bool",
+    "default": false,
+    "hint": "默认关闭。这是【权限门】不是素材开关：开启后仅 r18_user_whitelist 里的用户私聊时不被内容门拦。本插件不附带任何露骨素材，开启不会多出内容"
+  },
+  "r18_user_whitelist": {
+    "description": "豁免权限白名单用户 ID",
+    "type": "list",
+    "default": [],
+    "hint": "留空则无人获得豁免（默认拒绝，等于人人过内容门）。只填你自己的用户 ID 最安全"
+  },
+  "nsfw_block_prompt": {
+    "description": "拦截露骨提示词（生成前）",
+    "type": "bool",
+    "default": true,
+    "hint": "可靠的一道门：提示词里出现「裸/nude/内衣/情动」等词时直接拒绝，不浪费显卡。白名单用户的私聊不受限"
+  },
+  "nsfw_filter": {
+    "description": "检查产出图是否太暴露（生成后）",
+    "type": "bool",
+    "default": true,
+    "hint": "兜底的一道门，用像素判据估暴露度。注意：它是启发式，实测会把「露大腿的正常图」和「比基尼」排错顺序，只能抓整屏是肉的明显事故"
+  },
+  "nsfw_skin_threshold": {
+    "description": "暴露度阈值（0~1，越低越严）",
+    "type": "int",
+    "default": 55,
+    "hint": "实际比较时除以 100。官方裸立绘实测 59~60，比基尼 56，露大腿的正常图 69（会误拦）。默认 55"
+  },
+  "nsfw_allow_private_r18": {
+    "description": "允许私聊+白名单收到露骨产出（豁免生效）",
+    "type": "bool",
+    "default": true,
+    "hint": "关闭后连你自己的私聊也会被拦。只有「私聊」且「在 r18_user_whitelist 里」才放行，群聊永远不放行"
+  },
+  "blocked_limit": {
+    "description": "blocked/ 目录最多保留几张",
+    "type": "int",
+    "default": 20,
+    "hint": "被内容兜底拦下的图存在这里（不删，误拦时能拿回）。超过上限就淘汰最旧的，避免只增不减占满磁盘。0 = 不淘汰"
+  },
+  "rate_limit_enable": {
+    "description": "启用出图频率限制",
+    "type": "bool",
+    "default": true,
+    "hint": "按发送者 ID 计数，换群共用同一份配额"
+  },
+  "rate_limit_count": {
+    "description": "时间窗口内最多出图次数",
+    "type": "int",
+    "default": 5,
+    "hint": "0 表示不限次数（仍受下面的冷却约束）"
+  },
+  "rate_limit_window": {
+    "description": "配额时间窗口（秒）",
+    "type": "int",
+    "default": 600,
+    "hint": "默认 600 秒 = 10 分钟内最多 5 张"
+  },
+  "rate_limit_cooldown": {
+    "description": "两次出图之间的最小间隔（秒）",
+    "type": "int",
+    "default": 10,
+    "hint": "挡住手抖连点。0 表示不限制"
+  },
+  "verbose_replies": {
+    "description": "回执说详细内容",
+    "type": "bool",
+    "default": false,
+    "hint": "默认关：开始只回一句人设台词，出图只发图。细节（工作流/预设/参数/耗时/暴露度）写进 draw.log。想看详细回执就打开"
+  },
+  "persona_enable": {
+    "description": "回执使用人设台词",
+    "type": "bool",
+    "default": true,
+    "hint": "默认开：开始出图、拒绝、被拦等场景各回一句有人味的台词（按场景分组随机取）。台词文件 data/plugin_data/.../persona.json 可直接编辑，改完发「/画图 重载」生效"
+  },
+  "persona_file": {
+    "description": "人设台词文件路径",
+    "type": "text",
+    "default": "",
+    "hint": "留空用 data/plugin_data/astrbot_plugin_comfyui_local/persona.json；填了就用你指定的文件"
+  },
+  "draw_log_max_kb": {
+    "description": "生成日志单文件上限（KB）",
+    "type": "int",
+    "default": 512,
+    "hint": "超过就轮转成 draw.log.1，不会无限增长。日志路径：data/plugin_data/.../draw.log"
+  },
+  "enable_group": {
+    "description": "允许在群聊使用",
+    "type": "bool",
+    "default": true
+  },
+  "enable_private": {
+    "description": "允许在私聊使用",
+    "type": "bool",
+    "default": true
+  },
+  "group_whitelist": {
+    "description": "群白名单",
+    "type": "list",
+    "default": [],
+    "hint": "留空表示不限制"
+  },
+  "user_blacklist": {
+    "description": "用户黑名单",
+    "type": "list",
+    "default": []
+  }
+}

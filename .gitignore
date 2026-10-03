@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+# 本地工作流与预设（含底模 / LoRA 名，请勿提交）
+workflows/*.json
+!workflows/presets.json
+!workflows/workflow_meta.json
+!workflows/refs.json
+data/
+logs/
+*.log
+*.bak

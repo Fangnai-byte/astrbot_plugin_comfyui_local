@@ -1,0 +1,23 @@
+name: astrbot_plugin_comfyui_local
+display_name: ComfyUI 本地出图
+short_desc: 把本地 ComfyUI 接进 AstrBot，聊天里一句话出图，支持指定/展示工作流
+desc: >-
+  直接吃 ComfyUI 的「界面格式」工作流 JSON（菜单里普通「导出」的那种），提交前自动转成
+  API 格式，不用手动导出 API 格式。出图走 WebSocket 拿结果，比轮询 /history 更可靠。
+  支持一句话文生图、-w 指定工作流、-p 套预设、-r 用参考图（图生图 / ControlNet）、
+  列出/查看工作流、连通性检查。生成在后台任务里跑，不阻塞 AstrBot 消息管线。
+  另含内容兜底（提示词 + 产出图两道门）、出图频率限制、出图日志与人设台词。
+version: 1.0.0
+author: Fangnai-byte
+repo: "https://github.com/Fangnai-byte/astrbot_plugin_comfyui_local"
+astrbot_version: ">=4.16,<5"
+support_platforms:
+  - aiocqhttp
+  - telegram
+  - qq_official
+  - webchat
+tags:
+  - comfyui
+  - 绘画
+  - 文生图
+  - 工作流
