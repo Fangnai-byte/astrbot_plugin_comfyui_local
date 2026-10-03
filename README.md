@@ -1,5 +1,7 @@
 # ComfyUI 本地出图（AstrBot 插件）
 
+![logo](logo.png)
+
 把**你本机的 ComfyUI** 接进 AstrBot：群里一句话出图，模型和显存都是你自己的，
 不走任何第三方 API。
 
