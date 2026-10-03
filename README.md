@@ -16,6 +16,22 @@
 
 ---
 
+## 下载
+
+* **Release（推荐）**：到 [Releases](https://github.com/Fangnai-byte/astrbot_plugin_comfyui_local/releases)
+  下载 `astrbot_plugin_comfyui_local.zip`，解压后把整个目录放进插件目录。
+* **git**：
+
+  ```
+  git clone https://github.com/Fangnai-byte/astrbot_plugin_comfyui_local.git
+  ```
+
+* **更新**：`git pull`，或用新 zip 覆盖旧目录。你改过的配置不会丢 ——
+  真正生效的工作流 / 预设 / 参考图都在 `plugin_data/` 里，不在插件目录。
+* **问题与建议**：<https://github.com/Fangnai-byte/astrbot_plugin_comfyui_local/issues>
+
+---
+
 ## 一、安装
 
 1. 需要 **AstrBot 4.16 ~ 4.28**（`astrbot_version: >=4.16,<5`）。
@@ -293,3 +309,12 @@ astrbot_plugin_comfyui_local/
 ├── blocked/      被内容兜底拦下的图（blocked_limit 自动淘汰）
 └── draw.log      出图日志
 ```
+
+---
+
+## 许可
+
+MIT License，见 [LICENSE](LICENSE)。Copyright (c) 2026 Fangnai-byte。
+
+简要说：你可以随便用、改、再分发（包括商用），只要保留版权与许可声明；
+软件按原样提供，出图内容由使用者自己负责。
